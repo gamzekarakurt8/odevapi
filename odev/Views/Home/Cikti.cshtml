@@ -1,0 +1,166 @@
+﻿@model List<odev.Controllers.GroupedData>
+@{
+    Layout = null;
+    ViewData["Title"] = "Ödev Görüntüleme Paneli";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Odev</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 50px auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .table th {
+                border: 1px solid #ddd;
+                padding: 10px;
+                text-align: center;
+                background-color: #4CAF50;
+                color: white;
+            }
+
+            .table td {
+                border: 1px solid #ddd;
+                padding: 10px;
+                text-align: center;
+            }
+
+        .group {
+            background-color: #f0f0f0;
+            cursor: pointer;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .toggle-btn {
+            margin-right: 10px;
+        }
+
+            .toggle-btn::before {
+                content: '+';
+            }
+
+        .group.expanded .toggle-btn::before {
+            content: '-';
+        }
+
+        .group .toggle-btn {
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* Alt kırılımları ortalamak için düzenlemeler */
+        .collapsible-content {
+            margin-left: 20px;
+            text-align: left;
+        }
+
+            .collapsible-content .collapsible-content {
+                margin-left: 40px;
+            }
+
+                .collapsible-content .collapsible-content .collapsible-content {
+                    margin-left: 60px;
+                }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Ödev Tablosu</h2>
+        @if (Model != null)
+        {
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Hesap Kodu</th>
+                        <th>Toplam Borç</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var group1 in Model)
+                    {
+                        <tr class="group" onclick="toggleVisibility('group1-@group1.Kırılım1', this)">
+                            <td>
+                                <span class="toggle-btn"></span>@group1.Kırılım1
+                            </td>
+                            <td>@group1.ToplamBorc</td>
+                        </tr>
+                        <tr class="hidden collapsible-content" id="group1-@group1.Kırılım1">
+                            <td colspan="2">
+                                <table class="table table-bordered">
+                                    @foreach (var group2 in group1.Kırılım2Groups)
+                                    {
+                                        <tr class="group" onclick="toggleVisibility('group2-@group2.Kırılım2', this)">
+                                            <td style="padding-left: 20px;">
+                                                <span class="toggle-btn"></span>@group2.Kırılım2
+                                            </td>
+                                            <td>@group2.ToplamBorc</td>
+                                        </tr>
+                                        <tr class="hidden collapsible-content" id="group2-@group2.Kırılım2">
+                                            <td colspan="2">
+                                                <table class="table table-bordered">
+                                                    @foreach (var group3 in group2.Kırılım3Groups)
+                                                    {
+                                                        <tr>
+                                                            <td style="padding-left: 40px;">@group3.Kırılım3</td>
+                                                            <td>@group3.ToplamBorc</td>
+                                                        </tr>
+                                                    }
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    }
+                                </table>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>Veri bulunamadı.</p>
+        }
+    </div>
+
+    <script>
+        function toggleVisibility(id, element) {
+            var targetElement = document.getElementById(id);
+            var toggleBtn = element.querySelector('.toggle-btn');
+            if (targetElement.classList.contains('hidden')) {
+                targetElement.classList.remove('hidden');
+                element.classList.add('expanded');
+            } else {
+                targetElement.classList.add('hidden');
+                element.classList.remove('expanded');
+            }
+        }
+    </script>
+</body>
+</html>
